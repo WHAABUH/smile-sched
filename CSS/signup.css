@@ -1,0 +1,281 @@
+html body{
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: row;
+
+    background-color: #1D242B;
+}
+
+.left-div {
+    margin: 0;
+    height: 100%;
+    width: 45%; 
+
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: .5% 0%;
+}
+
+.input-container{
+    height: 70%;
+    width: 60%;
+    
+    padding: 8%;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.5);
+
+    display: flex;
+    flex-direction: column;
+
+
+    overflow: hidden;
+}
+
+.remarks{
+    height: 25%;
+    width: 100%;
+}
+
+.remarks h1{
+    margin: 0;
+    padding: 0;
+
+    color: #0077C0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+
+    height: auto;
+    width: auto;
+
+    font-size: calc(2vw + 2vh);
+}
+
+.remarks a{
+    all: unset;
+    margin: 0;
+    padding: 0;
+
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: lighter;
+
+    height: auto;
+    width: auto;
+
+    font-size: calc(.9vw + .9vh);
+    cursor: pointer;
+}
+
+.inputs-container{
+    height: auto;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+.inputs-container form{
+    display: flex;
+    flex-direction: column;
+}
+
+.fullname-container{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2vh;
+
+}
+
+.fullname-container label{
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    font-size: calc(1vw + 1vh);
+    margin-bottom: 1vh;
+}
+
+.fullname-container input{
+    padding: calc(.2vh + .2vw);
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: lighter;
+
+    font-size: calc(.9vw + .9vh);
+}
+
+.age-sex-container{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 2vh;
+}
+
+.age-container{
+    width: 50%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+
+
+}
+
+.age-container label{
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    font-size: calc(1vw + 1vh);
+    margin-bottom: 1vh;
+}
+
+.age-container input{
+    width: 80%;
+
+    padding: calc(.2vh + .2vw);
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: lighter;
+
+    font-size: calc(.9vw + .9vh);
+}
+
+.sex-container{
+    width: 50%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.sex-container label{
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    font-size: calc(1vw + 1vh);
+    margin-bottom: 1vh;
+}
+
+.sex-container select{
+    width: 100%;
+
+    padding: calc(.2vh + .2vw);
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: lighter;
+
+    font-size: calc(.9vw + .9vh);
+}
+
+.email-container{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2vh;
+
+}
+
+.email-container label{
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    font-size: calc(1vw + 1vh);
+    margin-bottom: 1vh;
+}
+
+.email-container input{
+    padding: calc(.2vh + .2vw);
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: lighter;
+
+    font-size: calc(.9vw + .9vh);
+}
+
+.password-container{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2vh;
+
+}
+
+.password-container label{
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    font-size: calc(1vw + 1vh);
+    margin-bottom: 1vh;
+}
+
+.password-container input{
+    padding: calc(.2vh + .2vw);
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: lighter;
+
+    font-size: calc(.9vw + .9vh);
+}
+
+.button-container{
+    margin-top: 2vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-container button{
+    width: 15vw;
+    align-self: center;
+    font-size: calc(.9vw + .9vh);
+    padding: calc(.2vh + .2vw);
+    cursor: pointer;
+
+    color: white;
+    background-color: #0077C0;
+    border: none;
+}
+
+
+.right-div{
+    width: 60%;
+    height: 100%;
+
+    padding: 5% 0%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome{
+    height: auto;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome h1{
+    color: #C7EEFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: calc(2vw + 2vh);
+}
+
+.image{
+    height: 70vh;
+    width: 60vw;
+}
+
+.image img{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    max-width: 100%;
+    height: auto;
+}
