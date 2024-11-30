@@ -39,7 +39,6 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
         <button type="submit" class="logout-button">Start now</button>
     </form>
 
-    <p>You have successfully logged in.</p>
     <a href="logout.php">Logout</a>
 </body>
 </html>

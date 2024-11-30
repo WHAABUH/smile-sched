@@ -6,7 +6,7 @@ $password = "";            // Default password (blank for XAMPP)
 $database = "smile-sched-db";     // Name of the database containing your `user_info` table
 
 // Connect to MySQL database
-$conn = new mysql($servername, $username, $password, $database);
+$conn = new mysqli($servername, $username, $password, $database);
 
 // Check for connection errors
 if ($conn->connect_error) {
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // Prepare and bind the SQL query
-    $stmt = $conn->prepare("INSERT INTO user_info (fullname, age, sex, email, password) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO user_info (fullname, age, sex, email, password, role) VALUES (?, ?, ?, ?, ?, 'patient')");
     $stmt->bind_param("sisss", $fullname, $age, $sex, $email, $hashedPassword);
 
     // Execute the query and check for success

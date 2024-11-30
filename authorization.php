@@ -7,7 +7,7 @@ $username = "root";
 $password = ""; // Default password for XAMPP
 $database = "smile-sched-db";
 
-$conn = new mysql($servername, $username, $password, $database);
+$conn = new mysqli($servername, $username, $password, $database);
 
 // Check connection
 if ($conn->connect_error) {
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Prepare a statement to find the user by email
-    $stmt = $conn->prepare("SELECT id, fullname, password FROM user_info WHERE email = ?");
+    $stmt = $conn->prepare("SELECT user_id, fullname, password FROM user_info WHERE email = ?");
     if ($stmt === false) {
         die("Failed to prepare statement: " . $conn->error);
     }
@@ -39,12 +39,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
 
-        // Verify the password
+        // Verify the password using password_verify
         if (password_verify($password, $user['password'])) {
             // Set session variables for successful login
             $_SESSION['loggedin'] = true;
             $_SESSION['fullname'] = $user['fullname'];
-            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_id'] = $user['user_id'];
 
             // Redirect to the home page
             header("Location: http://localhost/smile-sched/home.php");
