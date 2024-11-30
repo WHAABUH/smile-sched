@@ -12,8 +12,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
 ?>
 
-<!--<h1>Welcome, <?php echo $fullname; ?>!</h1> -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +24,6 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
     <a href="home.php">Home</a>
     <a href="services.php">Services</a>
     <a href="slot.php">Reservation</a>
-    <a href="logout.php">Logout</a>
     <form action="logout.php" method="post">
         <button type="submit" class="logout-button">Logout</button>
     </form>
@@ -39,6 +36,5 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
         <button type="submit" class="logout-button">Start now</button>
     </form>
 
-    <a href="logout.php">Logout</a>
 </body>
 </html>
