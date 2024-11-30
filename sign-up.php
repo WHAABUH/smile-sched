@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +10,8 @@
     <title>Document</title>
 </head>
 <body>
+
+    <h1>Welcome to Smile-Sched!</h1>
     <h1>Sign Up</h1>
     <a href="login.php">Already a member? Login here!</a>
     
@@ -31,7 +37,7 @@
         <input type="submit" id="logButton" value="log-in">
     </form>
     
-    <h1>Welcome to Smile-Sched!</h1>
+    
 
 </body>
 </html>

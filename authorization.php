@@ -7,22 +7,30 @@ $username = "root";
 $password = ""; // Default password for XAMPP
 $database = "smile-sched-db";
 
-// Connect to MySQL
-$conn = new mysqli($servername, $username, $password, $database);
+$conn = new mysql($servername, $username, $password, $database);
 
 // Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Database connection failed: " . $conn->connect_error);
 }
 
-// Check if the form was submitted
+// Process login if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the email and password from the form
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
+    // Get the email and password safely
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-    // Query to find the user by email
+    if (empty($email) || empty($password)) {
+        echo '<script>alert("Please fill in all fields."); window.location.href = "login.php";</script>';
+        exit();
+    }
+
+    // Prepare a statement to find the user by email
     $stmt = $conn->prepare("SELECT id, fullname, password FROM user_info WHERE email = ?");
+    if ($stmt === false) {
+        die("Failed to prepare statement: " . $conn->error);
+    }
+
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -33,26 +41,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Verify the password
         if (password_verify($password, $user['password'])) {
-            // Login successful
+            // Set session variables for successful login
             $_SESSION['loggedin'] = true;
             $_SESSION['fullname'] = $user['fullname'];
             $_SESSION['user_id'] = $user['id'];
 
-            // Redirect to home page or dashboard
+            // Redirect to the home page
             header("Location: http://localhost/smile-sched/home.php");
             exit();
         } else {
             // Incorrect password
-            header("Location: http://localhost/smile-sched/login.php");
+            echo '<script>alert("Incorrect password."); window.location.href = "login.php";</script>';
+            exit();
         }
     } else {
         // User not found
-        echo '<script>alert("No user found, please sign up."); window.location.href = "http://localhost/smile-sched/login.php";</script>';
+        echo '<script>alert("No user found with this email. Please sign up."); window.location.href = "login.php";</script>';
         exit();
     }
 
     // Close the statement and connection
     $stmt->close();
     $conn->close();
+} else {
+    // Redirect if accessed without POST request
+    header("Location: http://localhost/smile-sched/login.php");
+    exit();
 }
 ?>

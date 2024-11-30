@@ -4,6 +4,6 @@ session_unset(); // Remove all session variables
 session_destroy(); // Destroy the session
 
 // Redirect to the login page
-header("Location: http://localhost/smile-sched/login.php);
+header("Location: http://localhost/smile-sched/login.php");
 exit();
 ?>

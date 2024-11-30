@@ -1,4 +1,4 @@
-<?php
+<?php 
 // Database connection
 $servername = "localhost"; // Use localhost for local servers
 $username = "root";        // Default username for local MySQL servers
@@ -6,7 +6,7 @@ $password = "";            // Default password (blank for XAMPP)
 $database = "smile-sched-db";     // Name of the database containing your `user_info` table
 
 // Connect to MySQL database
-$conn = new mysqli($servername, $username, $password, $database);
+$conn = new mysql($servername, $username, $password, $database);
 
 // Check for connection errors
 if ($conn->connect_error) {
@@ -22,20 +22,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']); 
 
+    // Hash the password using password_hash()
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
     // Prepare and bind the SQL query
     $stmt = $conn->prepare("INSERT INTO user_info (fullname, age, sex, email, password) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sisss", $fullname, $age, $sex, $email, $password);
+    $stmt->bind_param("sisss", $fullname, $age, $sex, $email, $hashedPassword);
 
     // Execute the query and check for success
     if ($stmt->execute()) {
-        echo "Sign-up successful! Welcome, " . htmlspecialchars($fullname) . ".";
-        header("Location: http://localhost/smile-sched/login.php");
+        echo '<script>alert("Sign-up successful! Welcome, ' . htmlspecialchars($fullname) . '."); window.location.href = "http://localhost/smile-sched/login.php";</script>';
     } else {
         // Check for duplicate email error
         if ($conn->errno == 1062) {
-            echo "The email address is already registered. Please use a different email.";
+            echo '<script>alert("The email address is already registered. Please use a different email."); window.location.href = "http://localhost/smile-sched/signup.php";</script>';
         } else {
-            echo "Error: " . $stmt->error;
+            echo '<script>alert("Error: ' . htmlspecialchars($stmt->error) . '"); window.location.href = "http://localhost/smile-sched/signup.php";</script>';
         }
     }
 
