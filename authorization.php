@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Prepare a statement to find the user by email
-    $stmt = $conn->prepare("SELECT user_id, fullname, password FROM user_info WHERE email = ?");
+    $stmt = $conn->prepare("SELECT user_id, fullname, password, role FROM user_info WHERE email = ?");
     if ($stmt === false) {
         die("Failed to prepare statement: " . $conn->error);
     }
@@ -45,10 +45,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['loggedin'] = true;
             $_SESSION['fullname'] = $user['fullname'];
             $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['role'] = $user['role']; // Store role in session
 
-            // Redirect to the home page
-            header("Location: http://localhost/smile-sched/home.php");
-            exit();
+            // Redirect based on role
+            if ($user['role'] == 'admin') {
+                // Admin access
+                header("Location: http://localhost/smile-sched/admin.php");
+                exit();
+            } elseif ($user['role'] == 'patient') {
+                // Patient access
+                header("Location: http://localhost/smile-sched/home.php");
+                exit();
+            } 
         } else {
             // Incorrect password
             echo '<script>alert("Incorrect password."); window.location.href = "login.php";</script>';
