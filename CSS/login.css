@@ -11,7 +11,7 @@ html, body {
 .left-div {
     margin: 0;
     height: 100%;
-    width: 45%;       /* Occupy 40% of the parent’s width */
+    width: 45%; 
 
 
     display: flex;
