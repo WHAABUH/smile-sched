@@ -57,7 +57,7 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
             
             <div class="start-container">
                 <a href="reservation.php">
-                    <button type="button" class="start-button">Start now</button>
+                    <button type="button" class="start-button">Set Appointment</button>
                 </a>
             </div>
             

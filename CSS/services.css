@@ -1,7 +1,8 @@
 html body{
     height: 100vh;
     width: 100vw;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
 
     display: flex;
     flex-direction: column;
@@ -55,6 +56,8 @@ html body{
     flex-direction: row;
     align-items: center;
     gap: calc(2vw + 2vh);
+
+    
 }
 
 .links a:hover{
@@ -71,7 +74,8 @@ html body{
 }
 
 .links #services{
-    text-decoration: none;
+    font-weight: bolder;
+    text-decoration: underline;
     cursor: pointer;
 }
 
@@ -81,8 +85,7 @@ html body{
 }
 
 .links #home{
-    font-weight: bolder;
-    text-decoration: underline;
+    text-decoration: none;
     cursor: pointer;
 }
 
@@ -116,94 +119,100 @@ html body{
 }
 
 .main-container{
-    margin: 0;
-    height: 85vh;
+    height: auto;
     width: 99.8vw;
 
+}
+
+.first-container{
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    padding: 1% 0;
+    
+    gap: calc(2vw + 2vh);
 }
 
-.left-side{
-    margin: 0;
-    height: 85vh;
-    width: 40.9vw;
-    
+.service-container{
+    height: 80vh;
+    width: 25vw;
+    background-color: #34404C;
+    border-radius: calc(1vw + 1vh);
+
     display: flex;
     flex-direction: column;
-    padding: 10% 3%;
-}
 
-.heading{
-    height: auto;
-    width: 90%;
-    padding: 0;
-    margin: 0;
-}
+    overflow: hidden;
 
-.heading h2{
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: calc(2vw + 2vh);
-    font-weight:900;
-    color: white;
-    padding: 0;
-    margin: 0;
-}
-
-.paragraph{
-    height: auto;
-    width: 90%;
-    padding: 0;
-    margin: 0;
-}
-
-.paragraph p{
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: calc(.8vw + .8vh);
-    font-weight: lighter;
-    color: white;
-}
-
-.start-container{
-    height: auto;
-    width: auto;
-
-    
-}
-
-.start-button{
-    background-color: #C7EEFF;
-    color: black;
-
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: calc(.7vw + .7vh);
-    border-radius: calc(2vh + 2vw);
-    border: none;
-
-    height: 4vh;
-    width: 10vw;
-
-    cursor: pointer;
-
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     transition: box-shadow 0.4s ease-in-out;
 }
 
-.start-button:hover{
+.service-container:hover{
     box-shadow: 0 0 20px 10px rgba(0, 255, 200, 0.7);
 }
 
-.right-side{
-    margin: 0;
-    height: 90vh;
-    width: 49.9vw;
-    
+.image-container{
+    height: 60%;
+    width: 100%;
+
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
     overflow: hidden;
 }
-.right-side img{
-    max-width: 100%;
+
+.image-container img{
+    max-width: 90%;
     height: auto;
 }
 
+#overflow-image{
+    overflow: hidden;
+}
+
+#overflow-image img{
+
+    margin-top: 7vh;
+}
+
+.text-container{
+    height: 35%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.text-container h1{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    font-size: calc(1.5vw + 1.5vh);
+    color: white;
+
+}
+
+.text-container p{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: lighter;
+    font-size: calc(.7vw + .7vh);
+    text-align: center;
+    color: white;
+
+    width: 80%;
+    margin-top: 0;
+}
+
+.text-container #price{
+    color: #C7EEFF;
+}
+
+.second-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 1% 0;
+    
+    gap: calc(2vw + 2vh);
+}
