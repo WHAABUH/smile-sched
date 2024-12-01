@@ -17,24 +17,60 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./CSS/home.css"/>
     <title>Home</title>
 </head>
 <body>
-    <h1>Smile-Sched</h1>
-    <a href="home.php">Home</a>
-    <a href="services.php">Services</a>
-    <a href="slot.php">Reservation</a>
-    <form action="logout.php" method="post">
-        <button type="submit" class="logout-button">Logout</button>
-    </form>
 
-    <h2>Dentist Appointments Made Easier</h2>
-    <p style="text-align: justify;">Reserve an appointment with out top-notch dentists. Online scheduling is now available thanks to this easy access website. 
-       Reserve an appointment with out top-notch dentists. Online scheduling is now available thanks to this easy access website.</p>
+    <div class="nav-bar">
 
-    <form action="logout.php" method="post">
-        <button type="submit" class="logout-button">Start now</button>
-    </form>
+        <div class="logo-title">
+            <img src="./Images/logo.png" alt="logo">
+            <h1>Smile-Sched</h1>
+        </div>
+
+        <div class="links">
+            <a href="home.php" id="home">Home</a>
+            <a href="services.php" id="services">Services</a>
+            <a href="reservation.php" id="reservation">Reservation</a>
+        </div>
+
+        <div class="logout">
+            <form action="logout.php" method="post">
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
+        </div>
+
+    </div>
+    
+    <div class="main-container">
+
+        <div class="left-side">
+
+            <div class="heading">
+             <h2>Dentist Appointments Made Easier</h2>
+            </div>
+            
+            <div class="paragraph">
+                <p style="text-align: justify;">Book an appointment with our top-notch dentists today! With the convenience of our easy-to-use website, online scheduling has never been simpler. Experience hassle-free access to quality dental care at your fingertips.</p>
+            </div>
+            
+            <div class="start-container">
+                <a href="reservation.php">
+                    <button type="button" class="start-button">Start now</button>
+                </a>
+            </div>
+            
+        </div>
+
+        <div class="right-side">
+            <img src="./Images/homeImage.png" alt="home-image">
+        </div>
+
+    </div>
+    
+   
+
 
 </body>
 </html>
