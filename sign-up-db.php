@@ -3,7 +3,7 @@
 $servername = "localhost"; // Use localhost for local servers
 $username = "root";        // Default username for local MySQL servers
 $password = "";            // Default password (blank for XAMPP)
-$database = "smile-sched-db";     // Name of the database containing your `user_info` table
+$database = "smile-sched-db"; // Name of the database containing your `user_info` table
 
 // Connect to MySQL database
 $conn = new mysqli($servername, $username, $password, $database);
@@ -25,19 +25,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Hash the password using password_hash()
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // Prepare and bind the SQL query
-    $stmt = $conn->prepare("INSERT INTO user_info (fullname, age, sex, email, password, role) VALUES (?, ?, ?, ?, ?, 'patient')");
-    $stmt->bind_param("sisss", $fullname, $age, $sex, $email, $hashedPassword);
+    // Check if the email already exists in the database
+    $emailCheckStmt = $conn->prepare("SELECT user_id FROM user_info WHERE email = ?");
+    $emailCheckStmt->bind_param("s", $email);
+    $emailCheckStmt->execute();
+    $emailCheckStmt->store_result();
 
-    // Execute the query and check for success
-    if ($stmt->execute()) {
-        echo '<script>alert("Sign-up successful! Welcome, ' . htmlspecialchars($fullname) . '."); window.location.href = "http://localhost/smile-sched/login.php";</script>';
-    } else {
-        // Check for duplicate email error
-        if ($conn->errno == 1062) {
-            echo '<script>alert("The email address is already registered. Please use a different email."); window.location.href = "http://localhost/smile-sched/signup.php";</script>';
+    if ($emailCheckStmt->num_rows > 0) {
+        // Email already exists
+        echo '<script>alert("The email address is already registered. Please use a different email."); window.location.href = "http://localhost/smile-sched/sign-up.php";</script>';
+        $emailCheckStmt->close();
+        $conn->close();
+        exit;
+    }
+
+    $emailCheckStmt->close(); // Close the email check statement
+
+    // Prepare and bind the SQL query
+    try {
+        $stmt = $conn->prepare("INSERT INTO user_info (fullname, age, sex, email, password, role) VALUES (?, ?, ?, ?, ?, 'patient')");
+        $stmt->bind_param("sisss", $fullname, $age, $sex, $email, $hashedPassword);
+
+        // Attempt to execute the query
+        if ($stmt->execute()) {
+            echo '<script>alert("Sign-up successful! Welcome, ' . htmlspecialchars($fullname) . '."); window.location.href = "http://localhost/smile-sched/login.php";</script>';
+        }
+    } catch (mysqli_sql_exception $e) {
+        // Handle duplicate entry error
+        if ($e->getCode() == 1062) {
+            echo '<script>alert("The email address is already registered. Please use a different email."); window.location.href = "http://localhost/smile-sched/sign-up.php";</script>';
         } else {
-            echo '<script>alert("Error: ' . htmlspecialchars($stmt->error) . '"); window.location.href = "http://localhost/smile-sched/signup.php";</script>';
+            echo '<script>alert("Error: ' . htmlspecialchars($e->getMessage()) . '"); window.location.href = "http://localhost/smile-sched/sign-up.php";</script>';
         }
     }
 
