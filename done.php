@@ -17,7 +17,7 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./CSS/pending.css"/>
+    <link rel="stylesheet" href="./CSS/done.css"/>
     <title>Home</title>
 </head>
 <body>
@@ -83,12 +83,12 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
 
                     <div class="service-value"><h1>Cleaning</h1></div>
                     <div class="price-value"><h1>₱ 1500</h1></div>
-                    <div class="date-value"><h1>12/25/2024</h1></div>
-                    <div class="time-value"><h1>11AM - 12PM</h1></div>
+                    <div class="date-value"><h1>12/01/2024</h1></div>
+                    <div class="time-value"><h1>10AM - 11AM</h1></div>
                     <div class="status-value">
 
                         <div class="status-container">
-                            <h1 id="pending">Pending</h1>
+                            <h1 id="done">Done</h1>
                         </div>
 
                     </div>
@@ -97,52 +97,19 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
 
                 <div class="data">
 
-                    <div class="service-value"><h1>Whitening</h1></div>
-                    <div class="price-value"><h1>₱ 3500</h1></div>
-                    <div class="date-value"><h1>12/25/2024</h1></div>
-                    <div class="time-value"><h1>11AM - 12PM</h1></div>
+                    <div class="service-value"><h1>Wisdom Removal</h1></div>
+                    <div class="price-value"><h1>₱ 4500</h1></div>
+                    <div class="date-value"><h1>11/25/2024</h1></div>
+                    <div class="time-value"><h1>3PM - 4PM</h1></div>
                     <div class="status-value">
 
                         <div class="status-container">
-                            <h1 id="pending">Pending</h1>
+                            <h1 id="done">Done</h1>
                         </div>
 
                     </div>
 
                 </div>
-
-                <div class="data">
-
-                    <div class="service-value"><h1>Consult</h1></div>
-                    <div class="price-value"><h1>₱ 1000</h1></div>
-                    <div class="date-value"><h1>12/25/2024</h1></div>
-                    <div class="time-value"><h1>11AM - 12PM</h1></div>
-                    <div class="status-value">
-
-                        <div class="status-container">
-                            <h1 id="pending">Pending</h1>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="data">
-
-                    <div class="service-value"><h1>Cleaning</h1></div>
-                    <div class="price-value"><h1>₱ 1500</h1></div>
-                    <div class="date-value"><h1>12/25/2024</h1></div>
-                    <div class="time-value"><h1>11AM - 12PM</h1></div>
-                    <div class="status-value">
-
-                        <div class="status-container">
-                            <h1 id="pending">Pending</h1>
-                        </div>
-
-                    </div>
-
-                </div>
-
 
             </div>
 

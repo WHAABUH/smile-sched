@@ -163,7 +163,7 @@ html body{
 }
 
 
-.pending-container h1{
+.done-container h1{
     color: White;
     font-weight: bolder;
 }
@@ -264,14 +264,14 @@ html body{
 
     border-radius: calc(1vw + 1vh) !important; 
     border: none;
-    background-color: #FF7F50;
+    background-color: #50C878;
 
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
 }
 
-#pending{
+#done{
     width: 100%;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: lighter;

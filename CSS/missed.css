@@ -68,9 +68,6 @@ html body{
     font-size: calc(1vw + 1vh);
 
     transition: text-shadow 0.4s ease-in-out;
-}
-
-.links #services{
     text-decoration: none;
     cursor: pointer;
 }
@@ -78,11 +75,6 @@ html body{
 .links #reservation{
     font-weight: bolder;
     text-decoration: underline;
-    cursor: pointer;
-}
-
-.links #home{
-    text-decoration: none;
     cursor: pointer;
 }
 
@@ -163,7 +155,7 @@ html body{
 }
 
 
-.pending-container h1{
+.missed-container h1{
     color: White;
     font-weight: bolder;
 }
@@ -264,14 +256,13 @@ html body{
 
     border-radius: calc(1vw + 1vh) !important; 
     border: none;
-    background-color: #FF7F50;
-
+    background-color: #913831;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
 }
 
-#pending{
+#missed{
     width: 100%;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: lighter;
