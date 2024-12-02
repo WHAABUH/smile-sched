@@ -149,7 +149,7 @@ html body{
 }
 
 .service-container:hover{
-    box-shadow: 0 0 20px 10px rgba(0, 255, 200, 0.7);
+    box-shadow: 0 0 20px 10px #00ffc8b3;
 }
 
 .image-container{
