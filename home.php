@@ -32,7 +32,7 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
         <div class="links">
             <a href="home.php" id="home">Home</a>
             <a href="services.php" id="services">Services</a>
-            <a href="reservation.php" id="reservation">Reservation</a>
+            <a href="./pending.php" id="reservation">Appointment</a>
         </div>
 
         <div class="logout">
@@ -56,7 +56,7 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
             </div>
             
             <div class="start-container">
-                <a href="reservation.php">
+                <a href="pending.php">
                     <button type="button" class="start-button">Set Appointment</button>
                 </a>
             </div>
