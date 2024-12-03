@@ -46,6 +46,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['fullname'] = $user['fullname'];
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['role'] = $user['role']; // Store role in session
+            $_SESSION['email'] = $email; // Store email in session
+
+            // Save email to a file (optional)
+            $emailFile = "user_email.txt";
+            file_put_contents($emailFile, $email);
 
             // Redirect based on role
             if ($user['role'] == 'admin') {

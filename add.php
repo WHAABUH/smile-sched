@@ -157,7 +157,7 @@
 
                             <div class="receipt-dentist">
                                 <p>Dentist:&nbsp;</p>
-                                <p class="values" id="final-denstist">Leonie von Meusebach–Zesch</p>
+                                <p class="values" id="final-dentist">Leonie von Meusebach–Zesch</p>
                             </div>
 
                         </div>
@@ -245,6 +245,56 @@
             });
         });
     });
+
+    document.addEventListener("DOMContentLoaded", () => {
+    const appointmentButton = document.getElementById("add-appointment");
+
+    appointmentButton.addEventListener("click", async () => {
+        const service = document.getElementById("final-service").textContent.trim();
+        const amount = document.getElementById("final-amount").textContent.replace("₱", "").trim();
+        const date = document.getElementById("final-date").textContent.trim();
+        const time = document.getElementById("final-time").textContent.trim();
+        const dentist = document.getElementById("final-dentist").textContent.trim();
+
+        // Check for empty fields
+        if (
+            service === "Not Selected" ||
+            amount === "Not Selected" ||
+            date === "Not Selected" ||
+            time === "Not Selected" ||
+            dentist === "Not Selected"
+        ) {
+            alert("Please complete all the fields before proceeding.");
+            return;
+        }
+
+        // Send data to the server
+        const formData = new FormData();
+        formData.append("service", service);
+        formData.append("amount", amount);
+        formData.append("date", date);
+        formData.append("time", time);
+        formData.append("dentist", dentist);
+
+        try {
+            const response = await fetch("process_appointment.php", {
+                method: "POST",
+                body: formData,
+            });
+            const result = await response.json();
+
+            if (result.status === "success") {
+                alert(result.message);
+                window.location.href = "home.php"; // Redirect to home after success
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            alert("An error occurred. Please try again.");
+        }
+    });
+});
+
 </script>
 
         <script src="./script.js"></script>
