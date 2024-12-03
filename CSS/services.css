@@ -123,12 +123,12 @@ html body{
     justify-content: center;
     padding: 1% 0;
     
-    gap: calc(2vw + 2vh);
+    gap: calc(1vw + 1vh);
 }
 
 .service-container{
-    height: 80vh;
-    width: 25vw;
+    height: 65vh;
+    width: 20vw;
     background-color: #34404C;
     border-radius: calc(1vw + 1vh);
 
@@ -146,7 +146,7 @@ html body{
 }
 
 .image-container{
-    height: 60%;
+    height: 50%;
     width: 100%;
 
     display: flex;
@@ -184,6 +184,8 @@ html body{
     font-size: calc(1.5vw + 1.5vh);
     color: white;
 
+    text-align: center;
+
 }
 
 .text-container p{
@@ -207,5 +209,5 @@ html body{
     justify-content: center;
     padding: 1% 0;
     
-    gap: calc(2vw + 2vh);
+    gap: calc(1vw + 1vh);
 }
