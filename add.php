@@ -1,182 +1,120 @@
-    <?php
-    session_start();
+<?php
+session_start(); // Start the session
 
-    // Check if the user is logged in
-    if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-        header("Location: http://localhost/smile-sched/login.php");
-        exit();
+// Check if the user is logged in (loggedin session variable is set and true)
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    // Redirect to the login page if the user is not logged in
+    header("Location: login.php");
+    exit(); // Ensure the rest of the script doesn't execute
+}
+
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "smile-sched-db";
+
+$connection = new mysqli($servername,$username,$password,$database);
+
+$patient_email = $_SESSION['email'];
+$patient = $_SESSION['fullname'];
+$service = "";
+$amount = 0;
+$date = "";
+$start_time = "";
+$end_time = "";
+
+$errormessage = "";
+$successmessage = "";
+
+$available_times = ["08:00-09:00", "09:00-10:00", "11:00-12:00", "13:00-14:00", "14:00-15:00", "15:00-16:00"]; // Default time slots
+
+// Check for selected date and filter available time slots
+if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Ensure this block only runs when the form is submitted
+    $date = $_POST['date']; 
+    $service = $_POST['service']; 
+    $amount = $_POST['amount'];
+
+    $errormessage = "";
+    $successmessage = "";
+
+    if (isset($_POST['time']) && !empty($_POST['time'])) {
+        $timeRange = $_POST['time']; 
+        
+        list($start_time, $end_time) = explode("-", $timeRange);
+        
+        $start_time = date("H:i:s", strtotime($start_time));
+        $end_time = date("H:i:s", strtotime($end_time));
     }
 
-    // Greet the user
-    $fullname = htmlspecialchars($_SESSION['fullname']);
-    $tomorrow = date("Y-m-d", strtotime("+2 day"));
-    ?>
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="./CSS/add.css" />
-        <title>Home</title>
-    </head>
-    <body>
-        <div class="nav-bar">
-            <div class="logo-title">
-                <img src="./Images/logo.png" alt="logo">
-                <h1>Smile-Sched</h1>
-            </div>
-            <div class="links">
-                <a href="home.php" id="home">Home</a>
-                <a href="services.php" id="services">Services</a>
-                <a href="./pending.php" id="reservation">Appointment</a>
-                <a href="./add.php" id="add" style="text-decoration: underline; font-weight: bolder;">Add</a>
-            </div>
-            <div class="logout">
-                <form action="logout.php" method="post">
-                    <button type="submit" class="logout-button">Logout</button>
-                </form>
-            </div>
-        </div>
+    do {
+        if (empty($patient) || empty($service) || empty($amount) || empty($date)) {
+            $errormessage = "All fields must not be empty.";
+            break;
+        }
         
-        <div class="main-container">
-            <div class="container">
-                <!-- Page 1 -->
-                <div class="page active">
+        // Query to check existing appointments for the selected date
+        $sql_check = "SELECT start_time FROM appointments WHERE date = '$date'";
+        $resultExist = $connection->query($sql_check);
 
-                    <div class="values-container">
-                        <div class="service">
-                            <label for="service">Select a Service</label>
-                            <select name="service" id="service">
-                                <option value="Consultation">Consultation</option>
-                                <option value="Cleaning">Cleaning</option>
-                                <option value="Whitening">Whitening</option>
-                                <option value="Filling">Filling</option>
-                                <option value="Wisdom Removal">Wisdom Removal</option>
-                                <option value="Tooth Removal">Tooth Removal</option>
-                            </select>
-                        </div>
-
-                        <div class="amount">
-                            <p>Amount:&nbsp;&nbsp;</p>
-                            <div class="amount-holder">
-                                <p id="amount-text">   ₱ 1000</p>
-                            </div>
-                        </div>
-                    </div>
-                   
-
-                    <div class="navigation">
-                        <img class="next-button" src="./Images/next-button.png" alt="next">
-                    </div>
-
-                </div>
+        // If there are appointments already taken, filter them out from the available slots
+        if ($resultExist->num_rows > 0) {
+            while ($row = $resultExist->fetch_assoc()) {
+                $taken_time = $row['start_time'];
+                $taken_time_str = date("H:i", strtotime($taken_time));
                 
-                <!-- Page 2 -->
-                <div class="page">
+                // Remove the taken time slot from available_times
+                $available_times = array_filter($available_times, function($time) use ($taken_time_str) {
+                    return !str_contains($time, $taken_time_str);
+                });
+            }
+        }
 
-                    <div class="values-container">
+        // Check if schedule is available for the selected time
+        $sql_check_time = "SELECT * FROM appointments WHERE date = '$date' AND start_time = '$start_time'";
+        $resultExistTime = $connection->query($sql_check_time);
 
-                        <div class="date">
-                            <label for="date">Date:</label>
-                            <input type="date" id="date" name="date" min="<?php echo $tomorrow; ?>">
-                        </div>
+        if($resultExistTime ->num_rows < 1){
+            $sql = "INSERT INTO appointments (patient_email, patient, service, amount, date, start_time, end_time) 
+            VALUES ('$patient_email', '$patient', '$service', '$amount', '$date', '$start_time', '$end_time')";
+            $result = $connection->query($sql);
+            
+            // Add a new appointment
+            if (!$result) {
+                $errormessage = "Invalid query: " . $connection->error;
+                break;
+            }
+    
+            // Clear the form fields
+            $service = "";
+            $amount = 0;
+            $date = "";
+            $start_time = "";
+            $end_time = "";
+    
+            $successmessage = "Successfully added an appointment.";
+    
+            header("Location: add.php");
+            exit();    
+        }
 
-                        <div class="time">
-                            <label for="time">Time:</label>
-                            <select name="time">
-                                <option value="9AM - 10AM">9AM - 10AM</option>
-                                <option value="10AM - 11AM">10AM - 11AM</option>
-                                <option value="11AM - 12PM">11AM - 12PM</option>
-                                <option value="1PM - 2PM">1PM - 2PM</option>
-                                <option value="2PM - 3PM">2PM - 3PM</option>
-                                <option value="4PM - 5PM">4PM - 5PM</option>
-                                <option value="5PM - 6PM">5PM - 6PM</option>
-                            </select>
-                        </div>
+        $errormessage = "Schedule already taken..";
+        $resultExist = "";
+       
+    } while (false); // This ensures that the loop doesn't execute multiple times
+}
+?>
 
-                    </div>
-
-                    
-                    <div class="navigation" id="datetime-nav">
-                        <img class="prev-button" src="./Images/previous-button.png" alt="next">
-                        <img class="next-button" src="./Images/next-button.png" alt="next">
-                    </div>
-
-                </div>
-                
-                <!-- Page 3 -->
-                <div class="page">
-
-                    <div class="values-container">
-
-                        <div class="dentist">
-                            <label for="dentist">Assigned Dentist</label>
-                            <div class="name-holder">
-                                <p>Leonie von Meusebach–Zesch</p>
-                            </div>
-                        </div>
-
-                    </div>
-                    
-                    <div class="navigation">
-                        <img class="prev-button" src="./Images/previous-button.png" alt="next">
-                        <img class="next-button" src="./Images/next-button.png" alt="next">
-                    </div>
-
-                </div>
-
-                <div class="page">
-
-                    <div class="values-container">
-
-                        <div class="service-amount">
-                            <div class="receipt-service">
-                                <p>Service:&nbsp;</p>
-                                <p class="values" id="final-service">Not Selected</p>
-                            </div>
-                            <div class="receipt-amount">
-                                <p>Amount:&nbsp;</p>
-                                <p class="values" id="final-amount">Not Selected</p>
-                            </div>
-                        </div>
-
-                        <div class="date-time">
-
-                            <div class="receipt-date">
-                                <p>Date:&nbsp;</p>
-                                <p class="values" id="final-date">Not Selected</p>
-                            </div>
-                            <div class="receipt-time">
-                                <p>Time:&nbsp;</p>
-                                <p class="values" id="final-time">Not Selected</p>
-                            </div>
-                            
-                        </div>
-
-                        <div class="dentist-assigned">
-
-                            <div class="receipt-dentist">
-                                <p>Dentist:&nbsp;</p>
-                                <p class="values" id="final-dentist">Leonie von Meusebach–Zesch</p>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="navigation">
-                        <img class="prev-button" src="./Images/previous-button.png" alt="next">
-                        <button id="add-appointment">Set Appointment</button>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./CSS/add.css">
+    <title>Smile-Sched</title>
+    <script>
         
-        <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        // Prices map
-        const prices = {
+    function updateAmount() {
+        const serviceAmounts = {
             "Consultation": 1000,
             "Cleaning": 1500,
             "Whitening": 3000,
@@ -185,118 +123,138 @@
             "Tooth Removal": 2500
         };
 
-        // Elements for user inputs
-        const serviceDropdown = document.getElementById("service");
-        const dateInput = document.getElementById("date");
-        const timeDropdown = document.querySelector("select[name='time']");
-        const amountText = document.getElementById("amount-text");
+        const selectedService = document.querySelector("select[name='service']").value;
+        const amountField = document.querySelector("input[name='amount']");
+        amountField.value = serviceAmounts[selectedService] || "0.00";
+    }
 
-        // Final values elements
-        const finalService = document.getElementById("final-service");
-        const finalAmount = document.getElementById("final-amount");
-        const finalDate = document.getElementById("final-date");
-        const finalTime = document.getElementById("final-time");
-        const finalDentist = document.getElementById("final-dentist");
+    function updateAvailableTimes() {
+        const selectedDate = document.getElementById('date').value;
+        if (!selectedDate) return; // Don't make the request if no date is selected
 
-        // Navigation buttons
-        const nextButtons = document.querySelectorAll(".next-button");
-        const prevButtons = document.querySelectorAll(".prev-button");
-        const pages = document.querySelectorAll(".page");
-        let currentPage = 0;
+        // Create an AJAX request
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'fetch_times.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-        // Update amount dynamically
-        serviceDropdown.addEventListener("change", () => {
-            const selectedService = serviceDropdown.value;
-            amountText.textContent = `₱ ${prices[selectedService]}`;
-        });
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+                const timeSelect = document.getElementById('time');
+                timeSelect.innerHTML = ''; // Clear existing options
 
-        // Function to update final values
-        const updateFinalValues = () => {
-            finalService.textContent = serviceDropdown.value;
-            finalAmount.textContent = `₱ ${prices[serviceDropdown.value]}`;
-            finalDate.textContent = dateInput.value || "Not Selected";
-            finalTime.textContent = timeDropdown.value || "Not Selected";
-            finalDentist.textContent = "Leonie von Meusebach–Zesch"; // Static dentist value
+                // Add a default option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.text = 'Select time';
+                timeSelect.appendChild(defaultOption);
+
+                // Add available time slots as options
+                response.available_times.forEach(function(time) {
+                    const option = document.createElement('option');
+                    option.value = time;
+                    option.text = time;
+                    timeSelect.appendChild(option);
+                });
+            }
         };
 
-        // Navigation logic
-        nextButtons.forEach((button, index) => {
-            button.addEventListener("click", () => {
-                if (currentPage < pages.length - 1) {
-                    pages[currentPage].classList.remove("active");
-                    currentPage++;
-                    pages[currentPage].classList.add("active");
+        xhr.send('date=' + encodeURIComponent(selectedDate));
+    }
 
-                    // Update final values on last page
-                    if (currentPage === pages.length - 1) {
-                        updateFinalValues();
-                    }
-                }
-            });
-        });
-
-        prevButtons.forEach((button, index) => {
-            button.addEventListener("click", () => {
-                if (currentPage > 0) {
-                    pages[currentPage].classList.remove("active");
-                    currentPage--;
-                    pages[currentPage].classList.add("active");
-                }
-            });
-        });
-    });
-
-    document.addEventListener("DOMContentLoaded", () => {
-    const appointmentButton = document.getElementById("add-appointment");
-
-    appointmentButton.addEventListener("click", async () => {
-        const service = document.getElementById("final-service").textContent.trim();
-        const amount = document.getElementById("final-amount").textContent.replace("₱", "").trim();
-        const date = document.getElementById("final-date").textContent.trim();
-        const time = document.getElementById("final-time").textContent.trim();
-        const dentist = document.getElementById("final-dentist").textContent.trim();
-
-        // Check for empty fields
-        if (
-            service === "Not Selected" ||
-            amount === "Not Selected" ||
-            date === "Not Selected" ||
-            time === "Not Selected" ||
-            dentist === "Not Selected"
-        ) {
-            alert("Please complete all the fields before proceeding.");
-            return;
-        }
-
-        // Send data to the server
-        const formData = new FormData();
-        formData.append("service", service);
-        formData.append("amount", amount);
-        formData.append("date", date);
-        formData.append("time", time);
-        formData.append("dentist", dentist);
-
-        try {
-            const response = await fetch("process_appointment.php", {
-                method: "POST",
-                body: formData,
-            });
-            const result = await response.json();
-
-            if (result.status === "success") {
-                alert(result.message);
-                window.location.href = "home.php"; // Redirect to home after success
-            } else {
-                alert(result.message);
-            }
-        } catch (error) {
-            alert("An error occurred. Please try again.");
-        }
-    });
-});
-
+    // Combine both functions into one window.onload event
+    window.onload = function() {
+        updateAmount();
+        updateAvailableTimes(); // Ensure both functions run on page load
+    };
 </script>
 
-        <script src="./script.js"></script>
-    </body>
+</head>
+<body>
+    <div class="navContainer">
+        <div class="logoContainer">
+            <h1 class="logo">Smile-Sched</h1>
+        </div>
+        <div class="homePage">
+            <a href="home.php"><h1>Home</h1></a>
+        </div>
+        <div class="servicePage">
+            <a href="services.php"><h1>Services</h1></a>
+        </div>
+        <div class="myAppointmentPage">
+            <a href="appointments.php"><h1>Appointments</h1></a>
+        </div>
+        <div class="addAppointmentPage">
+            <a href="add.php"><h1>Add Appointment</h1></a>
+        </div>
+        <div class="contactUs">
+            <span>Contact us: smilesched@email.com/09992424569</span>
+        </div>
+    </div>
+    <div class="mainContainer">
+
+        <?php
+        if (!empty($errormessage)) {
+            echo "
+                <div>
+                    <h1>$errormessage</h1>
+                </div> 
+            ";
+        }
+        ?>
+
+        <form method="post" id="appointment-form">
+            <div>
+                <label for="name">Patient:</label>
+                <input type="text" value="<?php echo $patient; ?>" name="patient" readonly>
+            </div>
+            <div>
+                <label for="service">Service:</label>
+                <select name="service" onchange="updateAmount()" value="<?php echo $service; ?>">
+                    <option value="Consultation">Consultation</option>
+                    <option value="Cleaning">Cleaning</option>
+                    <option value="Whitening">Whitening</option>
+                    <option value="Filling">Filling</option>
+                    <option value="Wisdom Removal">Wisdom Removal</option>
+                    <option value="Tooth Removal">Tooth Removal</option>
+                </select>
+            </div>
+            <div>
+                <label for="amount">Amount:</label>
+                <input type="text" name="amount" value="<?php echo $amount; ?>" readonly>
+            </div>
+            <div>
+                <label for="date">Date:</label>
+                <input type="date" name="date" id="date" value="<?php echo $date; ?>" min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" onchange="updateAvailableTimes()">
+            </div>
+            <div>
+                <label for="time">Time:</label>
+                <select name="time" id="time">
+                    <?php
+                    foreach ($available_times as $time) {
+                        echo "<option value='$time'>$time</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            <div>
+                <label for="dentist">Dentist:</label>
+                <p>Doctora Reniel Faye Larman</p>
+            </div>
+            <div>
+                <button type="reset">Clear</button>
+                <button type="submit">Set Appointment</button>
+            </div>
+            <?php 
+            if (!empty($successmessage)) {
+                echo "
+                <div>
+                    <h1>$successmessage</h1>
+                </div> 
+            ";
+            }
+            ?>
+        </form>
+    </div>
+</body>
 </html>
