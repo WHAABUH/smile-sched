@@ -44,110 +44,96 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
         </div>
     </div>
 
-    <div class="main-container">
+    <div class="main-container">    
 
-        <div class="tab-container">
-
-            <div class="pending-container">
-                <a href="pending.php">
-                    <h1>Pending</h1>
-                </a></div>
-            <div class="done-container" onclick="done.php">
-                <a href="done.php">
-                    <h1>Done</h1>
-                </a>
-            </div>
-            <div class="missed-container">
-                <a href="missed.php">
-                    <h1>Missed</h1>
-                </a>
-            </div>
-
+        <div class="choices">
+            <a href="pending.php">Pending</a>
+            <a href="done.php">Done</a>
+            <a href="missed.php">Missed</a>
         </div>
 
-        <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Price</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Cancel</th>
+                </tr>
+            </thead>
+            <tbody>
 
-            <div class="heading-container">
+                <?php
+                    $servername = "localhost";
+                    $username = "root";
+                    $password = "";
+                    $database = "smile-sched-db";
+                    $patient_email = $_SESSION['email'];
 
-                <div class="service"><h1>Service</h1></div>
-                <div class="price"><h1>Price</h1></div>
-                <div class="date"><h1>Date</h1></div>
-                <div class="time"><h1>Time</h1></div>
-                <div class="status"><h1>Status</h1></div>
+                    //create a connection to the database
+                    $connection = new mysqli($servername, $username, $password, $database);
 
-            </div>
+                    //function to delete data when user want to cancel appointment
+                    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['cancel_appointment_id'])) {
+                        $appointment_id = $_POST['cancel_appointment_id'];
+                
+                        // SQL to delete the appointment (modify as needed)
+                        $delete_sql = "DELETE FROM appointments WHERE appointment_id = ?";
+                        $stmt = $connection->prepare($delete_sql);
+                        $stmt->bind_param('i', $appointment_id);
+                
+                        if ($stmt->execute()) {
+                            
+                        } else {
+                            
+                        }
+                    }
 
-            <div class="data-container">
+                    if($connection->connect_error){
+                        die("Connection with database failed: " . $connection->connect_error);
+                    }
 
-                <div class="data">
+                    $sql = "SELECT * FROM appointments WHERE patient_email = '$patient_email' ORDER BY start_time ASC";
+                    $result = $connection->query($sql);
 
-                    <div class="service-value"><h1>Cleaning</h1></div>
-                    <div class="price-value"><h1>₱ 1500</h1></div>
-                    <div class="date-value"><h1>12/25/2024</h1></div>
-                    <div class="time-value"><h1>11AM - 12PM</h1></div>
-                    <div class="status-value">
+                    if(!$result){
+                        die("SQL Error: " . $connection->connect_error);
+                    }
 
-                        <div class="status-container">
-                            <h1 id="pending">Pending</h1>
-                        </div>
+                    while($row = $result->fetch_assoc()){
+                        // Convert start_time to a 12-hour format and calculate the end time
+                        $start_time = new DateTime($row['start_time']);
+                        $end_time = clone $start_time; // Clone to calculate the end time
+                        $end_time->modify('+1 hour'); // Add 1 hour
 
-                    </div>
+                        // Format start and end times to 12-hour format with AM/PM
+                        $formatted_start_time = $start_time->format('g:i A');
+                        $formatted_end_time = $end_time->format('g:i A');
 
-                </div>
+                        echo "
+                        <tr>
+                            <td>{$row['service']}</td>
+                            <td>{$row['amount']}</td>
+                            <td>{$row['date']}</td>
+                            <td>{$formatted_start_time} - {$formatted_end_time}</td>
+                            <td>{$row['status']}</td>
+                            <td>
+                                <form method='POST'>
+                                    <input type='hidden' name='cancel_appointment_id' value='{$row['appointment_id']}'>
+                                    <button type='submit'>Cancel</button>
+                                </form>
+                            </td>
+                        </tr>
+                        ";
+                    }
+                ?>
 
-                <div class="data">
+        </tbody>
 
-                    <div class="service-value"><h1>Whitening</h1></div>
-                    <div class="price-value"><h1>₱ 3500</h1></div>
-                    <div class="date-value"><h1>12/25/2024</h1></div>
-                    <div class="time-value"><h1>11AM - 12PM</h1></div>
-                    <div class="status-value">
-
-                        <div class="status-container">
-                            <h1 id="pending">Pending</h1>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="data">
-
-                    <div class="service-value"><h1>Consult</h1></div>
-                    <div class="price-value"><h1>₱ 1000</h1></div>
-                    <div class="date-value"><h1>12/25/2024</h1></div>
-                    <div class="time-value"><h1>11AM - 12PM</h1></div>
-                    <div class="status-value">
-
-                        <div class="status-container">
-                            <h1 id="pending">Pending</h1>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="data">
-
-                    <div class="service-value"><h1>Cleaning</h1></div>
-                    <div class="price-value"><h1>₱ 1500</h1></div>
-                    <div class="date-value"><h1>12/25/2024</h1></div>
-                    <div class="time-value"><h1>11AM - 12PM</h1></div>
-                    <div class="status-value">
-
-                        <div class="status-container">
-                            <h1 id="pending">Pending</h1>
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-            </div>
-
-        </div>
-
+        </table>
+       
     </div>
 
 </body>
