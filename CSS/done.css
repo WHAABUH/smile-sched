@@ -172,11 +172,11 @@ html body{
 .tableHolder{
     width: 90%;
     height: 70vh;
+    overflow: auto;
     background-color: #34404C;
     display: flex;
     justify-content: center;
     border-radius: .7rem;
-    overflow: auto;
 }
 
 /* Table Styling */

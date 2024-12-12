@@ -17,7 +17,7 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../CSS/recentpayments.css">
+    <link rel="stylesheet" href="../CSS/missed-sched.css">
     <title>Schedule</title>
 </head>
 <body>
@@ -57,13 +57,12 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
     <div class="tableHolder">
         <table>
             <thead>
-                <th class="noright">Payment ID</th>
-                <th class="noall">Email</th>
-                <th class="noall">Total</th>
-                <th class="noall">Payment</th>
-                <th class="noall">Change</th>
-                <th class="noall">Method</th>
-                <th class="noleft">Paid at</th>
+                <th class="noright">Patient</th>
+                <th class="noall">Service</th>
+                <th class="noall">Balance</th>
+                <th class="noall">Date</th>
+                <th class="noall">Time</th>
+                <th class="noleft">Status</th>
             </thead>
             <tbody>
                 <?php
@@ -76,7 +75,7 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
                  $connection = new mysqli($servername, $username, $password, $database);
 
                  $sql = "SELECT * 
-                    FROM payment ORDER BY created_at ASC";
+                    FROM appointments WHERE status = 'Missed' ORDER BY date ASC, start_time ASC";
                  
                  $result = $connection->query($sql);
 
@@ -85,15 +84,26 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
                  }
                 
                  while($row = $result->fetch_assoc()){
+
+                    $start_time = new DateTime($row['start_time']);
+    
+                    // Clone the start_time object and add 1 hour for the end time
+                    $end_time = clone $start_time;
+                    $end_time->modify('+1 hour');
+                    
+                    // Format the start and end times to 12-hour format with AM/PM
+                    $start_time_str = $start_time->format('g:i A');
+                    $end_time_str = $end_time->format('g:i A');
+
+
                     echo "
                         <tr>
-                            <td>$row[payment_id]</td>
-                            <td>$row[email]</td>
-                            <td>$row[total]</td>
-                            <td>$row[payment]</td>
-                            <td>$row[change_amount]</td>
-                            <td>$row[payment_method]</td>
-                            <td>$row[created_at]</td>
+                            <td>$row[patient]</td>
+                            <td>$row[service]</td>
+                            <td>$row[amount]</td>
+                            <td>$row[date]</td>
+                            <td>{$start_time_str} - {$end_time_str}</td>
+                            <td>$row[status]</td>
                         </tr>
                     ";
                  }

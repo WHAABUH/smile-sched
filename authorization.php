@@ -55,13 +55,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Redirect based on role
             if ($user['role'] == 'admin') {
                 // Admin access
+                $_SESSION['admin'] = true;
                 header("Location: http://localhost/smile-sched/admin-files/admin.php");
                 exit();
             } elseif ($user['role'] == 'patient') {
                 // Patient access
                 header("Location: http://localhost/smile-sched/home.php");
                 exit();
-            } 
+            } elseif($user['role'] == 'banned'){
+                echo '<script>alert("Youre account is banned."); window.location.href = "login.php";</script>';
+            exit();
+            }
         } else {
             // Incorrect password
             echo '<script>alert("Incorrect password."); window.location.href = "login.php";</script>';

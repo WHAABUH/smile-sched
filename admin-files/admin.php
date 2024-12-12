@@ -2,7 +2,7 @@
 session_start();
 
 // Check if the user is logged in
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['admin'] !== true) {
     // Redirect to login page if not logged in
     header("Location: http://localhost/smile-sched/login.php");
     exit();
@@ -32,6 +32,7 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
         <div class="links">
             <a href="admin.php" id="home">Home</a>
             <a href="schedule.php" id="schedule">Schedule</a>
+            <a href="missed-sched.php" id="missed">Missed</a>
             <a href="accounts.php" id="accounts">Accounts</a>
             <a href="recentpayment.php" id="payments">Payments</a>
         </div>
@@ -88,7 +89,7 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
                         <div class='box'>
                             
                             <div class='image-container'>
-                                <img src='../Images/doneIMG.png' alt=''>
+                                <img src='../Images/arewecooked.png' id='malake' alt=''>
                             </div>
 
                             <div class='text-container'>
@@ -118,7 +119,7 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
                             <div class='box'>
                                 
                                 <div class='image-container'>
-                                    <img src='../Images/missedIMG.png' id='missedIMG'>
+                                    <img src='../Images/isthisit.png' id='missedIMG'>
                                 </div>
 
                                 <div class='text-container'>

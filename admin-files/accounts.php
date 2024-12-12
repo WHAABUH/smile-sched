@@ -2,7 +2,7 @@
 session_start();
 
 // Check if the user is logged in
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['admin'] !== true) {
     // Redirect to login page if not logged in
     header("Location: http://localhost/smile-sched/login.php");
     exit();
@@ -32,12 +32,13 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
         <div class="links">
             <a href="admin.php" id="home">Home</a>
             <a href="schedule.php" id="schedule">Schedule</a>
+            <a href="missed-sched.php" id="missed">Missed</a>
             <a href="accounts.php" id="accounts">Accounts</a>
             <a href="recentpayment.php" id="payments">Payments</a>
         </div>
 
         <div class="logout">
-            <form action="logout.php" method="post">
+            <form action="../logout.php" method="post">
                 <button type="submit" class="logout-button">Logout</button>
             </form>
         </div>

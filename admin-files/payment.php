@@ -1,8 +1,7 @@
 <?php
 session_start();
 
-// Check if the user is logged in
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['admin'] !== true) {
     // Redirect to login page if not logged in
     header("Location: http://localhost/smile-sched/login.php");
     exit();
@@ -64,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $update_stmt = $connection->prepare($sql);
                 $update_stmt->bind_param("i", $id);
                 if($update_stmt->execute()){
-                    header("Location: schedule.php");
+                    echo '<script>alert("Payment successful."); window.location.href = "schedule.php";</script>';
                     exit();
                 }
             } else {
@@ -74,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->close();
             $connection->close();
         } else {
-            echo "Payment amount is less than the total. Payment not processed.";
+            echo '<script>alert("Payment cant be less than the total.");</script>';
         }
     } else {
         echo "Please fill out all payment fields.";
