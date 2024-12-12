@@ -44,77 +44,124 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
         </div>
     </div>
 
-    <div class="main-container">
+    <div class="main-container">    
 
-        <div class="tab-container">
+        <div class="choices">
 
-            <div class="pending-container">
-                <a href="pending.php">
-                    <h1>Pending</h1>
-                </a></div>
-            <div class="done-container" onclick="done.php">
-                <a href="done.php">
-                    <h1>Done</h1>
-                </a>
-            </div>
-            <div class="missed-container">
-                <a href="missed.php">
-                    <h1>Missed</h1>
-                </a>
-            </div>
+            <?php
 
+                $servername = "localhost";
+                $username = "root";
+                $password = "";
+                $database = "smile-sched-db";
+                $patient_email = $_SESSION['email'];
+
+                //create a connection to the database
+                $connection = new mysqli($servername, $username, $password, $database);
+                $sql = "SELECT
+                COUNT(CASE WHEN status = 'Waiting' THEN 1 END) AS waiting,
+                COUNT(CASE WHEN status = 'Paid' THEN 1 END) AS paid,
+                COUNT(CASE WHEN status = 'Missed' THEN 1 END) AS missed
+                FROM appointments
+                WHERE patient_email = '$patient_email'";
+                $res = $connection->query($sql);
+
+                if(!$res){
+                    die("Database Error: " . $connection->connect_error);
+                }
+
+                while($row = $res->fetch_assoc()){
+                    echo"
+                         
+                        <a href='pending.php' style='text-decoration: none;'>
+                            <div class='tab'>
+                                <span>Pending</span>
+                                <span class='total'>$row[waiting]</span>
+                            </div>
+                        </a>
+                            
+                        <a href='done.php' style='text-decoration: none;'>
+                            <div class='tab'>
+                                <span>Done</span>
+                                <span class='total'>$row[paid]</span>
+                            </div>
+                        </a>
+                        
+                        <a href='missed.php' style='text-decoration: none;'> 
+                            <div class='tab'>
+                                <span>Missed</span>
+                                <span class='total'>$row[missed]</span>
+                            </div>
+                        </a>
+                        
+                    ";
+                }
+                
+            ?>
+           
         </div>
+        <div class="tableHolder">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Price</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
 
-        <div class="table-container">
+                    <?php
+                        $servername = "localhost";
+                        $username = "root";
+                        $password = "";
+                        $database = "smile-sched-db";
+                        $patient_email = $_SESSION['email'];
 
-            <div class="heading-container">
+                        //create a connection to the database
+                        $connection = new mysqli($servername, $username, $password, $database);
 
-                <div class="service"><h1>Service</h1></div>
-                <div class="price"><h1>Price</h1></div>
-                <div class="date"><h1>Date</h1></div>
-                <div class="time"><h1>Time</h1></div>
-                <div class="status"><h1>Status</h1></div>
+                        if($connection->connect_error){
+                            die("Connection with database failed: " . $connection->connect_error);
+                        }
 
-            </div>
+                        $sql = "SELECT * FROM appointments WHERE patient_email = '$patient_email' AND status = 'Paid' ORDER BY date ASC, start_time ASC";
+                        $result = $connection->query($sql);
 
-            <div class="data-container">
+                        if(!$result){
+                            die("SQL Error: " . $connection->connect_error);
+                        }
 
-                <div class="data">
+                        while($row = $result->fetch_assoc()){
+                            // Convert start_time to a 12-hour format and calculate the end time
+                            $start_time = new DateTime($row['start_time']);
+                            $end_time = clone $start_time; // Clone to calculate the end time
+                            $end_time->modify('+1 hour'); // Add 1 hour
 
-                    <div class="service-value"><h1>Cleaning</h1></div>
-                    <div class="price-value"><h1>₱ 1500</h1></div>
-                    <div class="date-value"><h1>12/01/2024</h1></div>
-                    <div class="time-value"><h1>10AM - 11AM</h1></div>
-                    <div class="status-value">
+                            // Format start and end times to 12-hour format with AM/PM
+                            $formatted_start_time = $start_time->format('g:i A');
+                            $formatted_end_time = $end_time->format('g:i A');
 
-                        <div class="status-container">
-                            <h1 id="done">Done</h1>
-                        </div>
+                            echo "
+                            <tr>
+                                <td>{$row['service']}</td>
+                                <td>{$row['amount']}</td>
+                                <td>{$row['date']}</td>
+                                <td>{$formatted_start_time} - {$formatted_end_time}</td>
+                                <td>{$row['status']}</td>
+                            </tr>
+                            ";
+                        }
+                    ?>
 
-                    </div>
+            </tbody>
 
-                </div>
-
-                <div class="data">
-
-                    <div class="service-value"><h1>Wisdom Removal</h1></div>
-                    <div class="price-value"><h1>₱ 4500</h1></div>
-                    <div class="date-value"><h1>11/25/2024</h1></div>
-                    <div class="time-value"><h1>3PM - 4PM</h1></div>
-                    <div class="status-value">
-
-                        <div class="status-container">
-                            <h1 id="done">Done</h1>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
+            </table>
+       
         </div>
-
+        
     </div>
 
 </body>
