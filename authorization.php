@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Redirect based on role
             if ($user['role'] == 'admin') {
                 // Admin access
-                header("Location: http://localhost/smile-sched/admin.php");
+                header("Location: http://localhost/smile-sched/admin-files/admin.php");
                 exit();
             } elseif ($user['role'] == 'patient') {
                 // Patient access

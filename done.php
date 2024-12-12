@@ -44,15 +44,63 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
         </div>
     </div>
 
-    <div class="main-container">
+    <div class="main-container">    
 
-        
-            <div class="choices">
-                <a href="pending.php">Pending</a>
-                <a href="done.php">Done</a>
-                <a href="missed.php">Missed</a>
-            </div>
+        <div class="choices">
 
+            <?php
+
+                $servername = "localhost";
+                $username = "root";
+                $password = "";
+                $database = "smile-sched-db";
+                $patient_email = $_SESSION['email'];
+
+                //create a connection to the database
+                $connection = new mysqli($servername, $username, $password, $database);
+                $sql = "SELECT
+                COUNT(CASE WHEN status = 'Waiting' THEN 1 END) AS waiting,
+                COUNT(CASE WHEN status = 'Paid' THEN 1 END) AS paid,
+                COUNT(CASE WHEN status = 'Missed' THEN 1 END) AS missed
+                FROM appointments
+                WHERE patient_email = '$patient_email'";
+                $res = $connection->query($sql);
+
+                if(!$res){
+                    die("Database Error: " . $connection->connect_error);
+                }
+
+                while($row = $res->fetch_assoc()){
+                    echo"
+                         
+                        <a href='pending.php' style='text-decoration: none;'>
+                            <div class='tab'>
+                                <span>Pending</span>
+                                <span class='total'>$row[waiting]</span>
+                            </div>
+                        </a>
+                            
+                        <a href='done.php' style='text-decoration: none;'>
+                            <div class='tab'>
+                                <span>Done</span>
+                                <span class='total'>$row[paid]</span>
+                            </div>
+                        </a>
+                        
+                        <a href='missed.php' style='text-decoration: none;'> 
+                            <div class='tab'>
+                                <span>Missed</span>
+                                <span class='total'>$row[missed]</span>
+                            </div>
+                        </a>
+                        
+                    ";
+                }
+                
+            ?>
+           
+        </div>
+        <div class="tableHolder">
             <table>
                 <thead>
                     <tr>
@@ -64,6 +112,7 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
                     </tr>
                 </thead>
                 <tbody>
+
                     <?php
                         $servername = "localhost";
                         $username = "root";
@@ -74,27 +123,11 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
                         //create a connection to the database
                         $connection = new mysqli($servername, $username, $password, $database);
 
-                        //function to delete data when user want to cancel appointment
-                        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['cancel_appointment_id'])) {
-                            $appointment_id = $_POST['cancel_appointment_id'];
-                    
-                            // SQL to delete the appointment (modify as needed)
-                            $delete_sql = "DELETE FROM appointments WHERE appointment_id = ?";
-                            $stmt = $connection->prepare($delete_sql);
-                            $stmt->bind_param('i', $appointment_id);
-                    
-                            if ($stmt->execute()) {
-                                
-                            } else {
-                                
-                            }
-                        }
-
                         if($connection->connect_error){
                             die("Connection with database failed: " . $connection->connect_error);
                         }
 
-                        $sql = "SELECT * FROM appointments WHERE patient_email = '$patient_email' AND status = 'Done' ORDER BY start_time ASC";
+                        $sql = "SELECT * FROM appointments WHERE patient_email = '$patient_email' AND status = 'Paid' ORDER BY date ASC, start_time ASC";
                         $result = $connection->query($sql);
 
                         if(!$result){
@@ -123,9 +156,12 @@ $fullname = htmlspecialchars($_SESSION['fullname']); // Escape to prevent XSS
                         }
                     ?>
 
-                </tbody>
-            </table>
+            </tbody>
 
+            </table>
+       
+        </div>
+        
     </div>
 
 </body>
